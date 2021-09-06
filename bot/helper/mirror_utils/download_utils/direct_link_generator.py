@@ -124,27 +124,14 @@ def zippy_share(url: str) -> str:
         
 def downfb(url: str) -> str:
     try:
-        r = requests.post("https://yt1s.io/api/ajaxSearch/facebook", data={"q": url, "vt": "facebook"}).text
-        bs = BeautifulSoup(r, "html5lib")
-        
-        js = str(bs).replace('<html><head></head><body>{"status":"ok","p":"facebook","links":', '').replace('</body></html>', '').replace('},', ',')
-        text_file = open(str(user_id) + "fb.txt", "w")
-        n = text_file.write(js)
-        text_file.close()
-        
-        with open(str(user_id) + "fb.txt") as f:
-            contents = json.load(f)
-            try:
-                durl = str(contents['hd']).replace('&amp;', '&')
-                link = durl.strip()
-                return link
-            except:
-                durl = str(contents['sd']).replace('&amp;', '&')
-                link = durl.strip()
-                return link
+        html = requests.get(url)
+        try: 
+            link = re.search('hd_src:"(.+?)"',html.text)
+            return link
+        except:
+            link = re.search('sd_src:"(.+?)"',html.text)
     except:
-        raise DirectDownloadLinkException("ERROR: The Fb link could be private.\n")
-
+        raise DirectDownloadLinkException("ERROR: The fb link is wrong or private.\n")
 
 
 def yandex_disk(url: str) -> str:
