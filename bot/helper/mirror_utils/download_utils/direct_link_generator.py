@@ -112,6 +112,10 @@ def downfb(url: str) -> str:
               durl = str(contents['hd']).replace('&amp;', '&')
               link = durl.strip()
               return link
+            except:
+              durl = str(contents['sd']).replace('&amp;', '&')
+              link = durl.strip()
+              return link
 
 def zippy_share(url: str) -> str:
     """ ZippyShare direct links generator
