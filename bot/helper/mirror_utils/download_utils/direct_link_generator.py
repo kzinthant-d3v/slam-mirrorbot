@@ -96,27 +96,6 @@ def direct_link_generator(link: str):
     else:
         raise DirectDownloadLinkException(f'No Direct link function found for {link}')
         
-def downfb(url: str) -> str:
-    try:
-        r  = requests.post("https://yt1s.io/api/ajaxSearch/facebook", data={"q": url, "vt": "facebook"}).text
-        bs = BeautifulSoup(r, "html5lib")
-        
-        js = str(bs).replace('<html><head></head><body>{"status":"ok","p":"facebook","links":', '').replace('</body></html>', '').replace('},', ',')
-        text_file = open(str(user_id) + "fb.txt", "w")
-        n = text_file.write(js)
-        text_file.close()
-        
-        with open(str(user_id) + "fb.txt") as f:
-            contents = json.load(f)
-            try:
-                durl = str(contents['hd']).replace('&amp;', '&')
-                link = durl.strip()
-                return link
-            except:
-                durl = str(contents['sd']).replace('&amp;', '&')
-                link = durl.strip()
-                return link
-
 def zippy_share(url: str) -> str:
     """ ZippyShare direct links generator
     Based on https://github.com/KenHV/Mirror-Bot
@@ -142,6 +121,30 @@ def zippy_share(url: str) -> str:
         return base_url + js_content
     except IndexError:
         raise DirectDownloadLinkException("ERROR: Can't find download button")
+        
+def downfb(url: str) -> str:
+    try:
+        r = requests.post("https://yt1s.io/api/ajaxSearch/facebook", data={"q": url, "vt": "facebook"}).text
+        bs = BeautifulSoup(r, "html5lib")
+        
+        js = str(bs).replace('<html><head></head><body>{"status":"ok","p":"facebook","links":', '').replace('</body></html>', '').replace('},', ',')
+        text_file = open(str(user_id) + "fb.txt", "w")
+        n = text_file.write(js)
+        text_file.close()
+        
+        with open(str(user_id) + "fb.txt") as f:
+            contents = json.load(f)
+            try:
+                durl = str(contents['hd']).replace('&amp;', '&')
+                link = durl.strip()
+                return link
+            except:
+                durl = str(contents['sd']).replace('&amp;', '&')
+                link = durl.strip()
+                return link
+    except:
+        raise DirectDownloadLinkException("ERROR: The Fb link could be private.\n")
+
 
 
 def yandex_disk(url: str) -> str:
