@@ -123,16 +123,17 @@ def zippy_share(url: str) -> str:
         raise DirectDownloadLinkException("ERROR: Can't find download button")
         
 def downfb(url: str) -> str:
-    try:
-        html = requests.get(url)
-        try: 
-            link = re.search('hd_src:"(.+?)"',html.text)
-            return link
-        except:
-            link = re.search('sd_src:"(.+?)"',html.text)
-            return link
-    except:
-        raise DirectDownloadLinkException("ERROR: The fb link is wrong or private.\n")
+    html = requests.get(url)
+    try: 
+        link = re.search('hd_src:"(.+?)"',html.text)
+        if link is None:
+            raise TypeError
+        return link
+    except TypeError:
+        link = re.search('sd_src:"(.+?)"',html.text)
+        if link is None:
+            raise DirectDownloadLinkException("ERROR: The fb link is wrong or private.\n")
+        return link
 
 
 def yandex_disk(url: str) -> str:
