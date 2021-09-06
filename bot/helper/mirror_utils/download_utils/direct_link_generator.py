@@ -13,6 +13,7 @@ import json
 import math
 import re
 import urllib.parse
+import time
 from os import popen
 from random import choice
 from urllib.parse import urlparse
@@ -127,11 +128,13 @@ def downfb(url: str) -> str:
         r  = requests.post("https://yt1s.io/api/ajaxSearch/facebook", data={"q": url, "vt": "facebook"}).text
         bs = BeautifulSoup(r, "html5lib")
         js = str(bs).replace('<html><head></head><body>{"status":"ok","p":"facebook","links":', '').replace('</body></html>', '').replace('},', ',')
-        text_file = open(str(user_id) + "fb.txt", "w")
+        unique = round(time.time() * 1000)
+        
+        text_file = open(str(unique) + "fb.txt", "w")
         n = text_file.write(js)
         text_file.close()
         
-        with open(str(user_id) + "fb.txt") as f:
+        with open(str(unique) + "fb.txt") as f:
             contents = json.load(f)
             try:
               durl = str(contents['hd']).replace('&amp;', '&')
