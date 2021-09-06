@@ -123,18 +123,27 @@ def zippy_share(url: str) -> str:
         raise DirectDownloadLinkException("ERROR: Can't find download button")
         
 def downfb(url: str) -> str:
-    html = requests.get(url)
-    try: 
-        link = re.search('hd_src:"(.+?)"',html.text)
-        if link is None:
-            raise TypeError
-        return link
-    except TypeError:
-        link = re.search('sd_src:"(.+?)"',html.text)
-        if link is None:
-            raise DirectDownloadLinkException("ERROR: The fb link is wrong or private.\n")
-        return link
-
+    try:
+        r  = requests.post("https://yt1s.io/api/ajaxSearch/facebook", data={"q": url, "vt": "facebook"}).text
+        bs = BeautifulSoup(r, "html5lib")
+        js = str(bs).replace('<html><head></head><body>{"status":"ok","p":"facebook","links":', '').replace('</body></html>', '').replace('},', ',')
+        text_file = open(str(user_id) + "fb.txt", "w")
+        n = text_file.write(js)
+        text_file.close()
+        
+        with open(str(user_id) + "fb.txt") as f:
+            contents = json.load(f)
+            try:
+              durl = str(contents['hd']).replace('&amp;', '&')
+              link = durl.strip()
+              return link
+            except:
+              durl = str(contents['sd']).replace('&amp;', '&')
+              link = durl.strip()
+              return link
+     
+    except KeyError:
+        raise DirectDownloadLinkException("ERROR: Facebook video link not found or private\n")  
 
 def yandex_disk(url: str) -> str:
     """ Yandex.Disk direct links generator
