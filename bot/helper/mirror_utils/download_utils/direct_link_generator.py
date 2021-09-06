@@ -91,7 +91,7 @@ def direct_link_generator(link: str):
         return fichier(link)
     elif 'solidfiles.com' in link:
         return solidfiles(link)
-    elif 'facebook.com' in link:
+    elif 'facebook.com' in link or 'fb.watch' in link:
         return downfb(link)
     else:
         raise DirectDownloadLinkException(f'No Direct link function found for {link}')
