@@ -130,6 +130,7 @@ def downfb(url: str) -> str:
             return link
         except:
             link = re.search('sd_src:"(.+?)"',html.text)
+            return link
     except:
         raise DirectDownloadLinkException("ERROR: The fb link is wrong or private.\n")
 
