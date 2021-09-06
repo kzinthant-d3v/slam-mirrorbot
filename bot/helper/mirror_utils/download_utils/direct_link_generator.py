@@ -91,9 +91,27 @@ def direct_link_generator(link: str):
         return fichier(link)
     elif 'solidfiles.com' in link:
         return solidfiles(link)
+    elif 'facebook.com' in link:
+        return downfb(link)
     else:
         raise DirectDownloadLinkException(f'No Direct link function found for {link}')
-
+        
+def downfb(url: str) -> str:
+    try:
+        r  = requests.post("https://yt1s.io/api/ajaxSearch/facebook", data={"q": url, "vt": "facebook"}).text
+        bs = BeautifulSoup(r, "html5lib")
+        
+        js = str(bs).replace('<html><head></head><body>{"status":"ok","p":"facebook","links":', '').replace('</body></html>', '').replace('},', ',')
+        text_file = open(str(user_id) + "fb.txt", "w")
+        n = text_file.write(js)
+        text_file.close()
+        
+        with open(str(user_id) + "fb.txt") as f:
+            contents = json.load(f)
+            try:
+              durl = str(contents['hd']).replace('&amp;', '&')
+              link = durl.strip()
+              return link
 
 def zippy_share(url: str) -> str:
     """ ZippyShare direct links generator
